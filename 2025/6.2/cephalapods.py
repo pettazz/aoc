@@ -1,3 +1,4 @@
+from functools import reduce
 from operator import mul, add
 
 numbers = None
@@ -13,19 +14,18 @@ with open('input.txt') as f:
       if char not in [" ", "\n"]:
         numbers[idx] += char
 
-rolling = 0
-total = 0
-op = ops.pop(0)
+numgroups = []
+rolling = [ops.pop(0)]
 for num in numbers:
-  if num == "":
-    total += rolling
-    if len(ops) > 0:
-      op = ops.pop(0)
-      rolling = 0
+  if num != "":
+    rolling.append(int(num))
   else:
-    if rolling == 0:
-      rolling = int(num)
-    else:
-      rolling = op(rolling, int(num))
+    numgroups.append(rolling)
+    if len(ops) > 0:
+      rolling = [ops.pop(0)]
+
+total = 0
+for group in numgroups:
+  total += reduce(group[0], group[1:])
 
 print(total)
